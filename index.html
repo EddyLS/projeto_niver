@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para Maria</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff4d6d'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>">
+
+    <style>
+        /* ==========================================================================
+           PALETA DE CORES (TONS DE ROSA CLARO) E CONFIGURAÇÕES GERAIS
+           ========================================================================== */
+        :root {
+            --rosa-fundo: #fff0f3;       
+            --rosa-principal: #ffb3c1;   
+            --rosa-escuro: #ff4d6d;      
+            --rosa-carta: #fffafb;       
+            --texto-cor: #5c3d42;        
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--rosa-fundo);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' fill='%23ff4d6d' fill-opacity='0.06' transform='scale(0.5) translate(10, 10)'/%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' fill='%23ff4d6d' fill-opacity='0.04' transform='scale(0.3) translate(120, 100)'/%3E%3C/svg%3E");
+            color: var(--texto-cor);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            z-index: 10; 
+        }
+
+        h1 {
+            color: var(--rosa-escuro);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .subtitulo {
+            font-size: 1.1rem;
+            color: #8a656b;
+            margin-bottom: 30px;
+        }
+
+        /* ==========================================================================
+           ESTILO DO CONTADOR REGRESSIVO (TELA DE BLOQUEIO)
+           ========================================================================== */
+        .bloqueio-container {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 179, 193, 0.2);
+            margin-top: 20px;
+            display: none; /* Controlado pelo JS */
+        }
+
+        .contador-titulo {
+            font-size: 1.3rem;
+            color: var(--texto-cor);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .timer-box {
+            background: var(--rosa-fundo);
+            padding: 15px;
+            border-radius: 12px;
+            min-width: 70px;
+            border: 1px solid var(--rosa-principal);
+        }
+
+        .timer-numero {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--rosa-escuro);
+            display: block;
+        }
+
+        .timer-rotulo {
+            font-size: 0.8rem;
+            color: #8a656b;
+            text-transform: uppercase;
+        }
+
+        /* Avisos visuais do Modo Dev */
+        .badge-dev {
+            background: #ffb703;
+            color: #023047;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        /* ==========================================================================
+           ESTILO DO ENVELOPE E DA CARTA
+           ========================================================================== */
+        .envelope-container-block {
+            display: none; /* Controlado pelo JS */
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            perspective: 1000px;
+            margin: 0 auto;
+            width: 300px;
+            height: 200px;
+            background-color: #ffa4b2; 
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            animation: tremer 3s infinite ease-in-out;
+        }
+
+        @keyframes tremer {
+            0% { transform: rotate(0deg); }
+            5% { transform: rotate(2deg); }
+            10% { transform: rotate(-2deg); }
+            15% { transform: rotate(1.5deg); }
+            20% { transform: rotate(-1.5deg); }
+            25% { transform: rotate(1deg); }
+            30% { transform: rotate(-1deg); }
+            35% { transform: rotate(0.5deg); }
+            40% { transform: rotate(0deg); }
+            100% { transform: rotate(0deg); } 
+        }
+
+        .envelope-wrapper:not(.aberto):hover {
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 100px solid var(--rosa-principal);
+            transform-origin: top;
+            transition: transform 0.5s ease;
+            z-index: 3;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.1));
+        }
+
+        .envelope-front {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid var(--rosa-principal);
+            border-right: 150px solid var(--rosa-principal);
+            border-bottom: 195px solid var(--rosa-principal);
+            border-radius: 0 0 10px 10px;
+            transform-origin: bottom; 
+            transition: transform 0.5s ease;
+            z-index: 2;
+            filter: drop-shadow(0px -2px 3px rgba(0,0,0,0.08));
+        }
+
+        .carta {
+            position: absolute;
+            top: 100px; 
+            left: 15px;
+            width: 270px;
+            height: 70px;
+            background-color: var(--rosa-carta);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            z-index: 1;
+            transition: transform 0.6s ease, height 0.6s ease, width 0.6s ease, top 0.6s ease, left 0.6s ease, right 0.6s ease;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .carta-conteudo {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* CONTAINER RESPONSIVO PARA O VÍDEO DO YOUTUBE */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; 
+            height: 0;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background-color: #000;
+            transition: all 0.5s ease; 
+            display: none; 
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .btn-cinema {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background-color: var(--rosa-principal);
+            color: #fff;
+            border: none;
+            padding: 12px 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 4px 10px rgba(255, 179, 193, 0.4);
+            transition: background 0.3s, transform 0.2s;
+            position: relative;
+            z-index: 100; 
+        }
+        .btn-cinema:hover {
+            background-color: var(--rosa-escuro);
+            transform: scale(1.02);
+        }
+        .btn-cinema:active {
+            transform: scale(0.98);
+        }
+
+        /* ==========================================================================
+           FUNDO PRETO (MODO CINEMA) COM FADE-IN
+           ========================================================================== */
+        .cinema-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.95); 
+            z-index: -1; 
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        body.modo-cinema-ativo .cinema-overlay {
+            z-index: 20000; 
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        body.modo-cinema-ativo .video-container {
+            display: block; 
+            width: 90vw;
+            max-width: 800px;
+            padding-bottom: 50.625%; 
+            z-index: 20001;
+        }
+
+        .btn-fechar-cinema {
+            position: absolute;
+            top: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 0.9rem;
+            z-index: 20002;
+        }
+        .btn-fechar-cinema:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* ==========================================================================
+           ESTADO ABERTO DA CARTA
+           ========================================================================== */
+        .envelope-wrapper.aberto {
+            animation: none;
+        }
+
+        .envelope-wrapper.aberto .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 0; 
+        }
+
+        .envelope-wrapper.aberto .envelope-front {
+            transform: rotateX(-180deg);
+            z-index: 0; 
+        }
+
+        .envelope-wrapper.aberto .carta {
+            top: -280px; 
+            width: 550px; 
+            height: 650px; 
+            left: -100px; 
+            z-index: 9999; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            overflow-y: auto; 
+        }
+
+        @media (max-width: 540px) {
+            .envelope-wrapper.aberto .carta {
+                position: fixed; 
+                width: 90vw;
+                height: 75vh;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                z-index: 9999; 
+                box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch; 
+                padding: 30px 20px;
+            }
+        }
+
+        .envelope-wrapper.aberto .carta-conteudo {
+            opacity: 1;
+            transition-delay: 0.3s;
+        }
+
+        .carta h2 {
+            color: var(--rosa-escuro);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed var(--rosa-principal);
+            padding-bottom: 5px;
+        }
+
+        .carta p {
+            margin-bottom: 12px;
+            color: #4a3337;
+        }
+
+        .carta .assinatura {
+            margin-top: 30px;
+            font-style: italic;
+            text-align: right;
+            font-weight: bold;
+            color: var(--rosa-escuro);
+        }
+
+        /* ==========================================================================
+           ESTILO DOS CONFETIS E CORAÇÕES
+           ========================================================================== */
+        .confete {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 10000; 
+            pointer-events: none;
+            animation: explodir 3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+
+        @keyframes explodir {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+            70% { opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0.6) rotate(var(--r)); opacity: 0; }
+        }
+
+        .coracao-caindo {
+            position: fixed;
+            top: -20px;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 1; 
+            animation: cair linear forwards;
+        }
+
+        @keyframes cair {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* ==========================================================================
+           ESTILO DO KIRBY (ANIMADO EM LOOP)
+           ========================================================================== */
+        .kirby-gif {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            width: 80px; 
+            height: auto;
+            z-index: 5; 
+            cursor: pointer;
+            animation: kirbyDoido 5s infinite ease-in-out;
+            transform-origin: bottom center;
+            transition: filter 0.3s;
+        }
+
+        .kirby-gif:hover, .kirby-gif:active {
+            animation: kirbySusto 0.5s ease-in-out forwards !important;
+        }
+
+        @keyframes kirbyDoido {
+            0%, 100% { transform: translateX(-50%) scale(1, 1) translateY(0); }
+            10% { transform: translateX(-50%) scale(1.3, 0.6) translateY(0); }
+            20% { transform: translateX(-50%) scale(0.8, 1.4) translateY(-40px) rotate(0deg); }
+            40% { transform: translateX(-50%) scale(1, 1) translateY(-80px) rotate(360deg); }
+            55% { transform: translateX(-50%) scale(0.9, 1.2) translateY(-20px) rotate(360deg); }
+            65% { transform: translateX(-50%) scale(1.2, 0.7) translateY(0) rotate(360deg); }
+            75% { transform: translateX(-50%) scale(1, 1) translateY(0) skewX(-10deg); }
+            85% { transform: translateX(-50%) scale(1, 1) translateY(0) skewX(10deg); }
+        }
+
+        @keyframes kirbySusto {
+            0% { transform: translateX(-50%) scale(1, 1); }
+            50% { transform: translateX(-50%) scale(0.5, 1.8) translateY(-100px) rotate(720deg); }
+            100% { transform: translateX(-50%) scale(1.1, 0.9) translateY(0) rotate(1080deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cinema-overlay" id="cinemaOverlay">
+        <button class="btn-fechar-cinema" onclick="desativarModoCinema(event)">✕ Fechar Vídeo</button>
+    </div>
+
+    <div class="container" id="mainContainer">
+        <div id="devBadge" class="badge-dev" style="display:none;">MODO PRA TESTES</div>
+
+        <h1 id="mainTitle">Feliz Aniversário meu amor!!</h1>
+        <p class="subtitulo" id="mainSubtitle">Clique no envelope abaixo para abrir sua surpresa</p>
+
+        <div class="bloqueio-container" id="telaContador">
+            <div class="contador-titulo">Sua surpresa estará pronta em:</div>
+            <div class="timer">
+                <div class="timer-box">
+                    <span class="timer-numero" id="dias">00</span>
+                    <span class="timer-rotulo">Dias</span>
+                </div>
+                <div class="timer-box">
+                    <span class="timer-numero" id="horas">00</span>
+                    <span class="timer-rotulo">Horas</span>
+                </div>
+                <div class="timer-box">
+                    <span class="timer-numero" id="minutos">00</span>
+                    <span class="timer-rotulo">Min</span>
+                </div>
+                <div class="timer-box">
+                    <span class="timer-numero" id="segundos">00</span>
+                    <span class="timer-rotulo">Seg</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="envelope-container-block" id="containerEnvelope">
+            <div class="envelope-wrapper" id="envelope" onclick="alternarCarta(event)">
+                <div class="envelope-flap"></div>
+                <div class="envelope-front"></div>
+                
+                <div class="carta">
+                    <div class="carta-conteudo" onclick="pararPropagacao(event)">
+                        
+                        <h2>Mivida,</h2>
+
+                        <p>Eu programei pra essa carta aparecer pra você bem na hora que bater o seu niver, então não se assuste caso eu esteja dormindo na hr kkkkkkk.</p>
+                        <p>Me lembro do ano passado, na sua casa, passando seu primeiro aniversário ao seu lado, todo bobo. Agora estamos aqui, quase dois anos juntos e comemorando o seu dia de novo! Espero que você se divirta muuuito hoje e consiga esquecer os problemas por pelo menos um dia. Você é a pessoa mais guerreira e forte que já vi na vida. Conhecer seus pontos fortes e fracos só me fez me apaixonar cada vez mais.</p>
+                        <p>Você merece o mundo, meu amor. Por mim, estaríamos viajando agora, zanzando por qualquer lugar, mas no momento só me resta planejar. Mas eu prometo que ainda vou te mostrar o mundo, as coisas lindas que a vida tem a oferecer e experimentar todos os lados dela com você. Passar por tudo isso ao seu lado vai ser inesquecível.</p>
+                        <p>Estamos só no começo e tenho certeza de que vamos olhar para trás no futuro e rir de tudo. Te amo muito, meu amor! Hoje mais que ontem, and amanhã mais que tudo!</p>
+                        <p>OBS: Não esqueça de ver o vídeo abaixo!!</p>
+                        <p class="assinatura">Com muito carinho, <br> Dudu ;)</p>
+                        
+                        <button class="btn-cinema" onclick="ativarModoCinema(event)">🎬 Clique ni mim para ver o vídeo!</button>
+                        
+                        <div class="video-container" id="meuVideo">
+                            <iframe 
+                                src="https://www.youtube.com/embed/S-9-OblJeT8"
+                                title="Surpresa Especial" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <img src="https://kirby.nintendo.com/assets/img/home/kirby-pink_2x.png" alt="Kirby" class="kirby-gif">
+
+    <script>
+        /* ==========================================================================
+           CONTROLE DE DATA E CONFIGURAÇÃO (MODO DEV)
+           ========================================================================== */
+
+        // Área pra testar a carta antes da data. (true = carta liberada, false = carta bloqueada até a data)
+        const MODO_DESENVOLVEDOR = false; 
+
+        // Data Alvo
+        const DATA_ALVO = new Date("June 10, 2026 00:00:00").getTime();
+
+        let cartaAberta = false;
+        let intervaloCoracoes = null; 
+        let ultimoSegundoGravado = null; // Armazena o último segundo processado para evitar re-render desnecessário
+
+        // Inicia o loop nativo do navegador baseado em frames
+        function loopContador() {
+            atualizarInterface();
+            requestAnimationFrame(loopContador);
+        }
+        
+        // Dispara a execução do loop
+        requestAnimationFrame(loopContador);
+
+        function atualizarInterface() {
+            const agora = new Date().getTime();
+            const tempoRestante = DATA_ALVO - agora;
+
+            const telaContador = document.getElementById("telaContador");
+            const containerEnvelope = document.getElementById("containerEnvelope");
+            const devBadge = document.getElementById("devBadge");
+            const mainTitle = document.getElementById("mainTitle");
+            const mainSubtitle = document.getElementById("mainSubtitle");
+
+            // Exibe a marcação do modo de desenvolvimento se ativo
+            if (MODO_DESENVOLVEDOR) {
+                devBadge.style.display = "inline-block";
+            } else {
+                devBadge.style.display = "none";
+            }
+
+            // Condição para liberar a carta: Se o tempo esgotou OU se o Modo Dev for true
+            if (tempoRestante <= 0 || MODO_DESENVOLVEDOR) {
+                // Altera as telas apenas se o envelope ainda não estiver visível (evita re-render em loop)
+                if (containerEnvelope.style.display !== "block") {
+                    telaContador.style.display = "none";
+                    containerEnvelope.style.display = "block";
+                    mainTitle.innerText = "Feliz Aniversário meu amor!!";
+                    mainSubtitle.innerText = "Clique no envelope abaixo para abrir sua surpresa";
+                }
+            } else {
+                // Se ainda não chegou a data e NÃO está no modo Dev: Trava o site e mostra o timer
+                if (telaContador.style.display !== "block") {
+                    telaContador.style.display = "block";
+                    containerEnvelope.style.display = "none";
+                    mainTitle.innerText = "Falta pooooooouco!";
+                    mainSubtitle.innerText = "Chegando no zero, volte aqui pra ver hehehe";
+                }
+
+                // Obtém o segundo atual do relógio do sistema
+                const segundoAtualDoSistema = Math.floor(agora / 1000);
+                
+                // OTIMIZAÇÃO: Só entra e atualiza o DOM se o segundo mudou de fato
+                if (segundoAtualDoSistema !== ultimoSegundoGravado) {
+                    ultimoSegundoGravado = segundoAtualDoSistema;
+
+                    // Cálculos matemáticos de tempo para o contador
+                    const dias = Math.floor(tempoRestante / (1000 * 60 * 60 * 24));
+                    const horas = Math.floor((tempoRestante % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutos = Math.floor((tempoRestante % (1000 * 60 * 60)) / (1000 * 60));
+                    const segundos = Math.floor((tempoRestante % (1000 * 60)) / 1000);
+
+                    // Atualiza o HTML com os valores formatados com zero à esquerda
+                    document.getElementById("dias").innerText = dias < 10 ? "0" + dias : dias;
+                    document.getElementById("horas").innerText = horas < 10 ? "0" + horas : horas;
+                    document.getElementById("minutos").innerText = minutos < 10 ? "0" + minutes : minutos;
+                    document.getElementById("segundos").innerText = segundos < 10 ? "0" + segundos : segundos;
+                }
+            }
+        }
+
+        /* ==========================================================================
+           FUNÇÕES DE INTERAÇÃO DA CARTA E ANIMAÇÕES
+           ========================================================================== */
+        function alternarCarta(event) {
+            if (event) event.stopPropagation();
+            const envelope = document.getElementById('envelope');
+
+            if (!cartaAberta) {
+                envelope.classList.add('aberto');
+                cartaAberta = true;
+                
+                const rect = envelope.getBoundingClientRect();
+                const origenX = rect.left + (rect.width / 2);
+                const origenY = rect.top + (rect.height / 2);
+                
+                lancarConfetes(origenX, origenY);
+                comecarChuvaDeCoracoes(); 
+            } else {
+                envelope.classList.remove('aberto');
+                cartaAberta = false;
+                pararChuvaDeCoracoes(); 
+                desativarModoCinema(); 
+            }
+        }
+
+        function pararPropagacao(event) {
+            event.stopPropagation();
+        }
+
+        function activarModoCinema(event) {
+            if (event) event.stopPropagation();
+            const video = document.getElementById('meuVideo');
+            const overlay = document.getElementById('cinemaOverlay');
+            if (video && overlay) {
+                overlay.appendChild(video);
+                document.body.classList.add('modo-cinema-ativo');
+            }
+        }
+
+        function desativarModoCinema(event) {
+            if (event) event.stopPropagation();
+            const video = document.getElementById('meuVideo');
+            const conteudoCarta = document.querySelector('.carta-conteudo');
+            document.body.classList.remove('modo-cinema-ativo');
+            setTimeout(() => {
+                if(video && conteudoCarta) {
+                    conteudoCarta.appendChild(video);
+                }
+            }, 400); 
+        }
+
+        function lancarConfetes(x, y) {
+            const cores = ['#ff4d6d', '#ffb3c1', '#ffbe0b', '#fb5607', '#3a86ff', '#00f5d4', '#8338ec', '#ff006e'];
+            for (let i = 0; i < 120; i++) {
+                const confete = document.createElement('div');
+                confete.classList.add('confete');
+                confete.style.left = x + 'px';
+                confete.style.top = y + 'px';
+                const tamanho = (Math.random() * 10) + 6 + 'px';
+                confete.style.width = tamanho;
+                confete.style.height = tamanho;
+                confete.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+                confete.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
+                const angulo = Math.random() * Math.PI * 2;
+                const velocidade = (Math.random() * 300) + 300;
+                const destinoX = Math.cos(angulo) * velocidade + (Math.random() * 100 - 50);
+                const destinoY = Math.sin(angulo) * (velocidade * 0.6) - 200;
+                const r = (Math.random() * 720) - 360;
+                confete.style.setProperty('--x', `${destinoX}px`);
+                confete.style.setProperty('--y', `${destinoY}px`);
+                confete.style.setProperty('--r', `${r}deg`);
+                confete.style.animationDelay = (Math.random() * 0.1) + 's';
+                document.body.appendChild(confete);
+                setTimeout(() => confete.remove(), 3000);
+            }
+        }
+
+        function comecarChuvaDeCoracoes() {
+            intervaloCoracoes = setInterval(() => {
+                if (!cartaAberta) return;
+                const coracao = document.createElement('div');
+                coracao.classList.add('coracao-caindo');
+                const models = ['❤️', '💖', '💗', '🗿', '💘', '💝', '🩷'];
+                coracao.innerText = models[Math.floor(Math.random() * models.length)];
+                coracao.style.left = Math.random() * 100 + 'vw';
+                coracao.style.fontSize = (Math.random() * 17) + 15 + 'px';
+                const duracao = (Math.random() * 3) + 3;
+                coracao.style.animationDuration = duracao + 's';
+                coracao.style.opacity = (Math.random() * 0.5) + 0.5;
+                document.body.appendChild(coracao);
+                setTimeout(() => coracao.remove(), duracao * 1000);
+            }, 300);
+        }
+
+        function pararChuvaDeCoracoes() {
+            clearInterval(intervaloCoracoes); 
+            const coracoesAtivos = document.querySelectorAll('.coracao-caindo');
+            coracoesAtivos.forEach(c => c.remove());
+        }
+    </script>
+</body>
+</html>
