@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Para Maria</title>
+    <title>Minhas Surpresas</title>
     
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff4d6d'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>">
+    <link class="favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff4d6d'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>">
 
     <style>
-        /* ==========================================================================
-           PALETA DE CORES (TONS DE ROSA CLARO) E CONFIGURAÇÕES GERAIS
-           ========================================================================== */
         :root {
             --rosa-fundo: #fff0f3;       
             --rosa-principal: #ffb3c1;   
@@ -41,7 +38,7 @@
 
         .container {
             text-align: center;
-            max-width: 600px;
+            max-width: 900px;
             width: 100%;
             position: relative;
             z-index: 10; 
@@ -60,16 +57,15 @@
             margin-bottom: 30px;
         }
 
-        /* ==========================================================================
-           ESTILO DO CONTADOR REGRESSIVO (TELA DE BLOQUEIO)
-           ========================================================================== */
+        /* TELA DE BLOQUEIO */
         .bloqueio-container {
             background: white;
             padding: 30px 20px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(255, 179, 193, 0.2);
-            margin-top: 20px;
-            display: none; /* Controlado pelo JS */
+            margin: 20px auto 0 auto;
+            max-width: 600px;
+            display: none; 
         }
 
         .contador-titulo {
@@ -106,7 +102,6 @@
             text-transform: uppercase;
         }
 
-        /* Avisos visuais do Modo Dev */
         .badge-dev {
             background: #ffb703;
             color: #023047;
@@ -118,42 +113,34 @@
             margin-bottom: 15px;
         }
 
-        /* ==========================================================================
-           ESTILO DO ENVELOPE E DA CARTA
-           ========================================================================== */
-        .envelope-container-block {
-            display: none; /* Controlado pelo JS */
+        /* GRID DE CARTAS */
+        .cartas-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            display: none;
+            position: relative;
+            z-index: 10; 
         }
 
+        /* COMPONENTES DOS ENVELOPES */
         .envelope-wrapper {
             position: relative;
             cursor: pointer;
             perspective: 1000px;
-            margin: 0 auto;
-            width: 300px;
-            height: 200px;
-            background-color: #ffa4b2; 
+            width: 260px;
+            height: 180px;
             border-radius: 0 0 10px 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            animation: tremer 3s infinite ease-in-out;
-        }
-
-        @keyframes tremer {
-            0% { transform: rotate(0deg); }
-            5% { transform: rotate(2deg); }
-            10% { transform: rotate(-2deg); }
-            15% { transform: rotate(1.5deg); }
-            20% { transform: rotate(-1.5deg); }
-            25% { transform: rotate(1deg); }
-            30% { transform: rotate(-1deg); }
-            35% { transform: rotate(0.5deg); }
-            40% { transform: rotate(0deg); }
-            100% { transform: rotate(0deg); } 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            z-index: 11; 
         }
 
         .envelope-wrapper:not(.aberto):hover {
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
         }
 
         .envelope-flap {
@@ -162,13 +149,12 @@
             left: 0;
             width: 0;
             height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-top: 100px solid var(--rosa-principal);
+            border-left: 130px solid transparent;
+            border-right: 130px solid transparent;
+            border-top: 90px solid rgba(0,0,0,0.1); 
             transform-origin: top;
             transition: transform 0.5s ease;
             z-index: 3;
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.1));
         }
 
         .envelope-front {
@@ -177,28 +163,39 @@
             left: 0;
             width: 0;
             height: 0;
-            border-left: 150px solid var(--rosa-principal);
-            border-right: 150px solid var(--rosa-principal);
-            border-bottom: 195px solid var(--rosa-principal);
+            border-left: 130px solid rgba(0,0,0,0.05);
+            border-right: 130px solid rgba(0,0,0,0.05);
+            border-bottom: 175px solid rgba(0,0,0,0.02); 
             border-radius: 0 0 10px 10px;
             transform-origin: bottom; 
             transition: transform 0.5s ease;
             z-index: 2;
-            filter: drop-shadow(0px -2px 3px rgba(0,0,0,0.08));
+        }
+
+        .rotulo-carta {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            z-index: 4;
+            font-size: 0.95rem;
         }
 
         .carta {
             position: absolute;
-            top: 100px; 
+            top: 80px; 
             left: 15px;
-            width: 270px;
-            height: 70px;
+            width: 230px;
+            height: 60px;
             background-color: var(--rosa-carta);
             border-radius: 12px;
-            padding: 25px;
+            padding: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.05);
             z-index: 1;
-            transition: transform 0.6s ease, height 0.6s ease, width 0.6s ease, top 0.6s ease, left 0.6s ease, right 0.6s ease;
+            transition: all 0.6s ease;
             overflow: hidden;
             text-align: left;
         }
@@ -210,19 +207,16 @@
             line-height: 1.6;
         }
 
-        /* CONTAINER RESPONSIVO PARA O VÍDEO DO YOUTUBE */
+        /* CINEMA E VÍDEOS */
         .video-container {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%; 
             height: 0;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding-bottom: 56.25%; 
             background-color: #000;
-            transition: all 0.5s ease; 
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             display: none; 
         }
 
@@ -250,20 +244,12 @@
             margin-top: 25px;
             box-shadow: 0 4px 10px rgba(255, 179, 193, 0.4);
             transition: background 0.3s, transform 0.2s;
-            position: relative;
-            z-index: 100; 
         }
         .btn-cinema:hover {
             background-color: var(--rosa-escuro);
             transform: scale(1.02);
         }
-        .btn-cinema:active {
-            transform: scale(0.98);
-        }
 
-        /* ==========================================================================
-           FUNDO PRETO (MODO CINEMA) COM FADE-IN
-           ========================================================================== */
         .cinema-overlay {
             position: fixed;
             top: 0;
@@ -283,42 +269,51 @@
         }
 
         body.modo-cinema-ativo .cinema-overlay {
-            z-index: 20000; 
+            z-index: 5000000 !important; 
             opacity: 1;
             pointer-events: auto;
         }
 
         body.modo-cinema-ativo .video-container {
-            display: block; 
-            width: 90vw;
-            max-width: 800px;
-            padding-bottom: 50.625%; 
-            z-index: 20001;
+            display: block !important; 
+            width: 85vw;          
+            max-width: 960px;     
+            height: 0 !important; 
+            padding-bottom: 47.8%; 
+        }
+
+        @media (max-width: 768px) {
+            body.modo-cinema-ativo .video-container {
+                width: 95vw;      
+                padding-bottom: 53.4%;
+            }
         }
 
         .btn-fechar-cinema {
             position: absolute;
             top: 30px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 10px 20px;
-            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 24px;
+            border-radius: 30px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
-            font-size: 0.9rem;
-            z-index: 20002;
+            transition: background 0.3s, transform 0.2s;
+            font-size: 0.95rem;
+            z-index: 5000002 !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
+        
         .btn-fechar-cinema:hover {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
         }
 
-        /* ==========================================================================
-           ESTADO ABERTO DA CARTA
-           ========================================================================== */
+        /* ESTADO ABERTO DA CARTA */
         .envelope-wrapper.aberto {
             animation: none;
+            z-index: 999999 !important; 
         }
 
         .envelope-wrapper.aberto .envelope-flap {
@@ -331,29 +326,27 @@
             z-index: 0; 
         }
 
-        .envelope-wrapper.aberto .carta {
-            top: -280px; 
-            width: 550px; 
-            height: 650px; 
-            left: -100px; 
-            z-index: 9999; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            overflow-y: auto; 
+        .envelope-wrapper.aberto .rotulo-carta {
+            display: none; 
         }
 
-        @media (max-width: 540px) {
+        .envelope-wrapper.aberto .carta {
+            position: fixed;
+            width: 550px;
+            height: 75vh;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 1000000 !important; 
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4); 
+            overflow-y: auto;
+            padding: 30px 25px;
+        }
+
+        @media (max-width: 580px) {
             .envelope-wrapper.aberto .carta {
-                position: fixed; 
-                width: 90vw;
-                height: 75vh;
-                top: 50% !important;
-                left: 50% !important;
-                transform: translate(-50%, -50%) !important;
-                z-index: 9999; 
-                box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch; 
-                padding: 30px 20px;
+                width: 92vw;
+                height: 80vh; 
             }
         }
 
@@ -362,94 +355,43 @@
             transition-delay: 0.3s;
         }
 
-        .carta h2 {
-            color: var(--rosa-escuro);
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed var(--rosa-principal);
-            padding-bottom: 5px;
-        }
-
-        .carta p {
-            margin-bottom: 12px;
-            color: #4a3337;
-        }
-
-        .carta .assinatura {
-            margin-top: 30px;
-            font-style: italic;
-            text-align: right;
-            font-weight: bold;
-            color: var(--rosa-escuro);
-        }
-
-        /* ==========================================================================
-           ESTILO DOS CONFETIS E CORAÇÕES
-           ========================================================================== */
-        .confete {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            z-index: 10000; 
-            pointer-events: none;
-            animation: explodir 3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-        }
-
-        @keyframes explodir {
-            0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
-            70% { opacity: 1; }
-            100% { transform: translate(var(--x), var(--y)) scale(0.6) rotate(var(--r)); opacity: 0; }
-        }
-
-        .coracao-caindo {
-            position: fixed;
-            top: -20px;
-            font-size: 20px;
-            pointer-events: none;
-            z-index: 1; 
-            animation: cair linear forwards;
-        }
-
-        @keyframes cair {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
-        }
-
-        /* ==========================================================================
-           ESTILO DO KIRBY (ANIMADO EM LOOP)
-           ========================================================================== */
+        /* KIRBY FIXADO NO RODAPÉ */
         .kirby-gif {
-            position: fixed;
-            bottom: 10px;
-            left: 50%;
-            width: 80px; 
+            width: 100px;          
             height: auto;
+            position: fixed;       
+            bottom: 20px;          
+            left: 50%;             
+            transform: translateX(-50%); 
             z-index: 5; 
             cursor: pointer;
-            animation: kirbyDoido 5s infinite ease-in-out;
-            transform-origin: bottom center;
-            transition: filter 0.3s;
+            transform-origin: center center; 
+            animation: kirbyFlutuarComCentro 3s ease-in-out infinite;
+            transition: transform 0.1s ease;
+            user-select: none;
+            -webkit-user-drag: none;
         }
 
-        .kirby-gif:hover, .kirby-gif:active {
-            animation: kirbySusto 0.5s ease-in-out forwards !important;
+        .kirby-gif.super-rapido {
+            animation: kirbyPulaGiraEsticaNoRodape 0.7s cubic-bezier(0.25, 1, 0.5, 1) infinite;
         }
 
-        @keyframes kirbyDoido {
-            0%, 100% { transform: translateX(-50%) scale(1, 1) translateY(0); }
-            10% { transform: translateX(-50%) scale(1.3, 0.6) translateY(0); }
-            20% { transform: translateX(-50%) scale(0.8, 1.4) translateY(-40px) rotate(0deg); }
-            40% { transform: translateX(-50%) scale(1, 1) translateY(-80px) rotate(360deg); }
-            55% { transform: translateX(-50%) scale(0.9, 1.2) translateY(-20px) rotate(360deg); }
-            65% { transform: translateX(-50%) scale(1.2, 0.7) translateY(0) rotate(360deg); }
-            75% { transform: translateX(-50%) scale(1, 1) translateY(0) skewX(-10deg); }
-            85% { transform: translateX(-50%) scale(1, 1) translateY(0) skewX(10deg); }
+        .kirby-gif:active {
+            transform: translateX(-50%) scale(0.8);
         }
 
-        @keyframes kirbySusto {
-            0% { transform: translateX(-50%) scale(1, 1); }
-            50% { transform: translateX(-50%) scale(0.5, 1.8) translateY(-100px) rotate(720deg); }
-            100% { transform: translateX(-50%) scale(1.1, 0.9) translateY(0) rotate(1080deg); }
+        @keyframes kirbyFlutuarComCentro {
+            0% { transform: translateX(-50%) translateY(0px) scale(1); }
+            50% { transform: translateX(-50%) translateY(-12px) scale(1.02, 0.98); }
+            100% { transform: translateX(-50%) translateY(0px) scale(1); }
+        }
+
+        @keyframes kirbyPulaGiraEsticaNoRodape {
+            0% { transform: translateX(-50%) translateY(0) scale(1.2, 0.7) rotate(0deg); }
+            15% { transform: translateX(-50%) translateY(-20px) scale(0.8, 1.3) rotate(45deg); }
+            50% { transform: translateX(-50%) translateY(-70px) scale(1, 1) rotate(180deg); }
+            85% { transform: translateX(-50%) translateY(-20px) scale(0.8, 1.3) rotate(315deg); }
+            100% { transform: translateX(-50%) translateY(0) scale(1.2, 0.7) rotate(360deg); }
         }
     </style>
 </head>
@@ -463,245 +405,296 @@
         <div id="devBadge" class="badge-dev" style="display:none;">MODO PRA TESTES</div>
 
         <h1 id="mainTitle">Feliz Aniversário meu amor!!</h1>
-        <p class="subtitulo" id="mainSubtitle">Clique no envelope abaixo para abrir sua surpresa</p>
+        <p class="subtitulo" id="mainSubtitle">Clique nas cartas abaixo para abrir cada surpresa</p>
 
         <div class="bloqueio-container" id="telaContador">
-            <div class="contador-titulo">Sua surpresa estará pronta em:</div>
+            <div class="contador-titulo">Suas surpresas estarão prontas em:</div>
             <div class="timer">
-                <div class="timer-box">
-                    <span class="timer-numero" id="dias">00</span>
-                    <span class="timer-rotulo">Dias</span>
-                </div>
-                <div class="timer-box">
-                    <span class="timer-numero" id="horas">00</span>
-                    <span class="timer-rotulo">Horas</span>
-                </div>
-                <div class="timer-box">
-                    <span class="timer-numero" id="minutos">00</span>
-                    <span class="timer-rotulo">Min</span>
-                </div>
-                <div class="timer-box">
-                    <span class="timer-numero" id="segundos">00</span>
-                    <span class="timer-rotulo">Seg</span>
-                </div>
+                <div class="timer-box"><span class="timer-numero" id="dias">00</span><span class="timer-rotulo">Dias</span></div>
+                <div class="timer-box"><span class="timer-numero" id="horas">00</span><span class="timer-rotulo">Horas</span></div>
+                <div class="timer-box"><span class="timer-numero" id="minutos">00</span><span class="timer-rotulo">Min</span></div>
+                <div class="timer-box"><span class="timer-numero" id="segundos">00</span><span class="timer-rotulo">Seg</span></div>
             </div>
         </div>
 
-        <div class="envelope-container-block" id="containerEnvelope">
-            <div class="envelope-wrapper" id="envelope" onclick="alternarCarta(event)">
-                <div class="envelope-flap"></div>
-                <div class="envelope-front"></div>
-                
-                <div class="carta">
-                    <div class="carta-conteudo" onclick="pararPropagacao(event)">
-                        
-                        <h2>Mivida,</h2>
+        <div class="cartas-grid" id="containerCartas"></div>
 
-                        <p>Eu programei pra essa carta aparecer pra você bem na hora que bater o seu niver, então não se assuste caso eu esteja dormindo na hr kkkkkkk.</p>
-                        <p>Me lembro do ano passado, na sua casa, passando seu primeiro aniversário ao seu lado, todo bobo. Agora estamos aqui, quase dois anos juntos e comemorando o seu dia de novo! Espero que você se divirta muuuito hoje e consiga esquecer os problemas por pelo menos um dia. Você é a pessoa mais guerreira e forte que já vi na vida. Conhecer seus pontos fortes e fracos só me fez me apaixonar cada vez mais.</p>
-                        <p>Você merece o mundo, meu amor. Por mim, estaríamos viajando agora, zanzando por qualquer lugar, mas no momento só me resta planejar. Mas eu prometo que ainda vou te mostrar o mundo, as coisas lindas que a vida tem a oferecer e experimentar todos os lados dela com você. Passar por tudo isso ao seu lado vai ser inesquecível.</p>
-                        <p>Estamos só no começo e tenho certeza de que vamos olhar para trás no futuro e rir de tudo. Te amo muito, meu amor! Hoje mais que ontem, and amanhã mais que tudo!</p>
-                        <p>OBS: Não esqueça de ver o vídeo abaixo!!</p>
-                        <p class="assinatura">Com muito carinho, <br> Dudu ;)</p>
-                        
-                        <button class="btn-cinema" onclick="ativarModoCinema(event)">🎬 Clique ni mim para ver o vídeo!</button>
-                        
-                        <div class="video-container" id="meuVideo">
-                            <iframe 
-                                src="https://www.youtube.com/embed/S-9-OblJeT8"
-                                title="Surpresa Especial" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
-                            </iframe>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
+        <img src="https://imgs.search.brave.com/r_ohORNfC_c6wAqBJGWJQYWNuOx0Sj6iOSzfmVC_9pg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzkvS2ly/YnktRnJlZS1QTkcu/cG5n" 
+             alt="Kirby Interativo" 
+             class="kirby-gif" 
+             id="kirbyInterativo" 
+             onclick="acelerarKirby()">
     </div>
 
-    <img src="https://kirby.nintendo.com/assets/img/home/kirby-pink_2x.png" alt="Kirby" class="kirby-gif">
-
     <script>
-        /* ==========================================================================
-           CONTROLE DE DATA E CONFIGURAÇÃO (MODO DEV)
-           ========================================================================== */
-
-        // Área pra testar a carta antes da data. (true = carta liberada, false = carta bloqueada até a data)
         const MODO_DESENVOLVEDOR = false; 
-
-        // Data Alvo
         const DATA_ALVO = new Date("June 10, 2026 00:00:00").getTime();
 
-        let cartaAberta = false;
         let intervaloCoracoes = null; 
-        let ultimoSegundoGravado = null; // Armazena o último segundo processado para evitar re-render desnecessário
+        let ultimoSegundoGravado = null;
+        let cartasGeradas = false;
+        let videoAtivoId = null;
+        let DADOS_CARTAS = []; 
 
-        // Inicia o loop nativo do navegador baseado em frames
         function loopContador() {
-            atualizarInterface();
+            typeof atualizarInterface === "function" && atualizarInterface();
             requestAnimationFrame(loopContador);
         }
-        
-        // Dispara a execução do loop
         requestAnimationFrame(loopContador);
+
+        async function carregarCartasSeguras() {
+            if (cartasGeradas) return;
+
+            const agora = new Date().getTime();
+            if (DATA_ALVO - agora > 0 && !MODO_DESENVOLVEDOR) {
+                return; 
+            }
+
+            try {
+                const resposta = await fetch('cartas.json');
+                if (!resposta.ok) throw new Error('Erro ao ler base de cartas');
+                DADOS_CARTAS = await resposta.json();
+                
+                renderizarCartas();
+            } catch (erro) {
+                console.error("Aguardando liberação dos envelopes...");
+            }
+        }
+
+        function renderizarCartas() {
+            const grid = document.getElementById("containerCartas");
+            grid.innerHTML = ""; 
+
+            DADOS_CARTAS.forEach(dados => {
+                const wrapper = document.createElement("div");
+                wrapper.className = "envelope-wrapper";
+                wrapper.id = `envelope-${dados.id}`;
+                wrapper.style.backgroundColor = dados.corHex;
+                wrapper.setAttribute("onclick", `alternarCarta(event, ${dados.id})`);
+
+                const flap = document.createElement("div");
+                flap.className = "envelope-flap";
+                flap.style.borderTopColor = dados.corHex;
+                flap.style.filter = "brightness(0.95) drop-shadow(0px 2px 2px rgba(0,0,0,0.1))";
+
+                const front = document.createElement("div");
+                front.className = "envelope-front";
+                front.style.borderLeftColor = dados.corHex;
+                front.style.borderRightColor = dados.corHex;
+                front.style.borderBottomColor = dados.corHex;
+                front.style.filter = "brightness(0.9) drop-shadow(0px -2px 3px rgba(0,0,0,0.05))";
+
+                const rotulo = document.createElement("div");
+                rotulo.className = "rotulo-carta";
+                rotulo.innerText = dados.nome;
+
+                const carta = document.createElement("div");
+                carta.className = "carta";
+
+                const conteudo = document.createElement("div");
+                conteudo.className = "carta-conteudo";
+                conteudo.id = `conteudo-${dados.id}`;
+                conteudo.setAttribute("onclick", "pararPropagacao(event)");
+
+                let htmlFinal = dados.texto;
+
+                if (dados.videoUrl && dados.videoUrl.trim() !== "") {
+                    htmlFinal += `
+                        <button class="btn-cinema" onclick="pararPropagacao(event); activarModoCinema(event, ${dados.id})">🎬 Assistir Vídeo Especial</button>
+                        <div class="video-container" id="video-container-${dados.id}">
+                            <iframe id="iframe-${dados.id}" src="" title="Surpresa Especial" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    `;
+                }
+
+                conteudo.innerHTML = htmlFinal;
+                carta.appendChild(conteudo);
+                
+                wrapper.appendChild(flap);
+                wrapper.appendChild(front);
+                wrapper.appendChild(rotulo);
+                wrapper.appendChild(carta);
+                
+                grid.appendChild(wrapper);
+            });
+
+            cartasGeradas = true;
+        }
 
         function atualizarInterface() {
             const agora = new Date().getTime();
             const tempoRestante = DATA_ALVO - agora;
 
             const telaContador = document.getElementById("telaContador");
-            const containerEnvelope = document.getElementById("containerEnvelope");
+            const containerCartas = document.getElementById("containerCartas");
             const devBadge = document.getElementById("devBadge");
             const mainTitle = document.getElementById("mainTitle");
             const mainSubtitle = document.getElementById("mainSubtitle");
 
-            // Exibe a marcação do modo de desenvolvimento se ativo
-            if (MODO_DESENVOLVEDOR) {
-                devBadge.style.display = "inline-block";
-            } else {
-                devBadge.style.display = "none";
-            }
+            devBadge.style.display = MODO_DESENVOLVEDOR ? "inline-block" : "none";
 
-            // Condição para liberar a carta: Se o tempo esgotou OU se o Modo Dev for true
             if (tempoRestante <= 0 || MODO_DESENVOLVEDOR) {
-                // Altera as telas apenas se o envelope ainda não estiver visível (evita re-render em loop)
-                if (containerEnvelope.style.display !== "block") {
+                if (containerCartas.style.display !== "flex") {
                     telaContador.style.display = "none";
-                    containerEnvelope.style.display = "block";
+                    containerCartas.style.display = "flex";
                     mainTitle.innerText = "Feliz Aniversário meu amor!!";
-                    mainSubtitle.innerText = "Clique no envelope abaixo para abrir sua surpresa";
+                    mainSubtitle.innerText = "Clique nas cartas abaixo para abrir cada surpresa";
                 }
+                carregarCartasSeguras(); 
             } else {
-                // Se ainda não chegou a data e NÃO está no modo Dev: Trava o site e mostra o timer
                 if (telaContador.style.display !== "block") {
                     telaContador.style.display = "block";
-                    containerEnvelope.style.display = "none";
+                    containerCartas.style.display = "none";
                     mainTitle.innerText = "Falta pooooooouco!";
                     mainSubtitle.innerText = "Chegando no zero, volte aqui pra ver hehehe";
                 }
 
-                // Obtém o segundo atual do relógio do sistema
                 const segundoAtualDoSistema = Math.floor(agora / 1000);
-                
-                // OTIMIZAÇÃO: Só entra e atualiza o DOM se o segundo mudou de fato
                 if (segundoAtualDoSistema !== ultimoSegundoGravado) {
                     ultimoSegundoGravado = segundoAtualDoSistema;
 
-                    // Cálculos matemáticos de tempo para o contador
                     const dias = Math.floor(tempoRestante / (1000 * 60 * 60 * 24));
                     const horas = Math.floor((tempoRestante % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutos = Math.floor((tempoRestante % (1000 * 60 * 60)) / (1000 * 60));
+                    const minutes = Math.floor((tempoRestante % (1000 * 60 * 60)) / (1000 * 60));
                     const segundos = Math.floor((tempoRestante % (1000 * 60)) / 1000);
 
-                    // Atualiza o HTML com os valores formatados com zero à esquerda
                     document.getElementById("dias").innerText = dias < 10 ? "0" + dias : dias;
                     document.getElementById("horas").innerText = horas < 10 ? "0" + horas : horas;
-                    document.getElementById("minutos").innerText = minutos < 10 ? "0" + minutes : minutos;
+                    document.getElementById("minutos").innerText = minutes < 10 ? "0" + minutes : minutes;
                     document.getElementById("segundos").innerText = segundos < 10 ? "0" + segundos : segundos;
                 }
             }
         }
 
-        /* ==========================================================================
-           FUNÇÕES DE INTERAÇÃO DA CARTA E ANIMAÇÕES
-           ========================================================================== */
-        function alternarCarta(event) {
+        function alternarCarta(event, id) {
             if (event) event.stopPropagation();
-            const envelope = document.getElementById('envelope');
+            const envelope = document.getElementById(`envelope-${id}`);
+            const estaAberto = envelope.classList.contains('aberto');
 
-            if (!cartaAberta) {
+            document.querySelectorAll('.envelope-wrapper').forEach(env => {
+                env.classList.remove('aberto');
+            });
+
+            if (!estaAberto) {
                 envelope.classList.add('aberto');
-                cartaAberta = true;
-                
                 const rect = envelope.getBoundingClientRect();
-                const origenX = rect.left + (rect.width / 2);
-                const origenY = rect.top + (rect.height / 2);
-                
-                lancarConfetes(origenX, origenY);
+                lancarConfetes(rect.left + (rect.width / 2), rect.top + (rect.height / 2));
                 comecarChuvaDeCoracoes(); 
             } else {
-                envelope.classList.remove('aberto');
-                cartaAberta = false;
                 pararChuvaDeCoracoes(); 
                 desativarModoCinema(); 
             }
         }
 
         function pararPropagacao(event) {
-            event.stopPropagation();
+            if (event) {
+                event.stopPropagation();
+            }
         }
 
-        function activarModoCinema(event) {
-            if (event) event.stopPropagation();
-            const video = document.getElementById('meuVideo');
+        function activarModoCinema(event, id) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            videoAtivoId = id;
+            
+            const dadosCarta = DADOS_CARTAS.find(c => c.id === id);
+            const iframe = document.getElementById(`iframe-${id}`);
+            const containerVideo = document.getElementById(`video-container-${id}`);
             const overlay = document.getElementById('cinemaOverlay');
-            if (video && overlay) {
-                overlay.appendChild(video);
+
+            if (iframe && containerVideo && overlay) {
+                containerVideo.style.display = "block"; 
+                iframe.src = dadosCarta.videoUrl; 
+                overlay.appendChild(containerVideo);
                 document.body.classList.add('modo-cinema-ativo');
             }
         }
 
         function desativarModoCinema(event) {
             if (event) event.stopPropagation();
-            const video = document.getElementById('meuVideo');
-            const conteudoCarta = document.querySelector('.carta-conteudo');
+            if (!videoAtivoId) return;
+
+            const id = videoAtivoId;
+            const iframe = document.getElementById(`iframe-${id}`);
+            const containerVideo = document.getElementById(`video-container-${id}`);
+            const conteudoCarta = document.getElementById(`conteudo-${id}`);
+
             document.body.classList.remove('modo-cinema-ativo');
+            
+            if (iframe) iframe.src = ""; 
+
             setTimeout(() => {
-                if(video && conteudoCarta) {
-                    conteudoCarta.appendChild(video);
+                if (containerVideo && conteudoCarta) {
+                    containerVideo.style.display = "none"; 
+                    conteudoCarta.appendChild(containerVideo);
                 }
+                videoAtivoId = null;
             }, 400); 
         }
 
         function lancarConfetes(x, y) {
-            const cores = ['#ff4d6d', '#ffb3c1', '#ffbe0b', '#fb5607', '#3a86ff', '#00f5d4', '#8338ec', '#ff006e'];
-            for (let i = 0; i < 120; i++) {
+            const cores = ['#ff4d6d', '#ffb3c1', '#ffbe0b', '#fb5607', '#3a86ff', '#00f5d4'];
+            for (let i = 0; i < 60; i++) {
                 const confete = document.createElement('div');
-                confete.classList.add('confete');
+                confete.style.position = 'fixed';
                 confete.style.left = x + 'px';
                 confete.style.top = y + 'px';
-                const tamanho = (Math.random() * 10) + 6 + 'px';
-                confete.style.width = tamanho;
-                confete.style.height = tamanho;
-                confete.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+                confete.style.width = (Math.random() * 8) + 5 + 'px';
+                confete.style.height = (Math.random() * 8) + 5 + 'px';
                 confete.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
-                const angulo = Math.random() * Math.PI * 2;
-                const velocidade = (Math.random() * 300) + 300;
-                const destinoX = Math.cos(angulo) * velocidade + (Math.random() * 100 - 50);
-                const destinoY = Math.sin(angulo) * (velocidade * 0.6) - 200;
-                const r = (Math.random() * 720) - 360;
-                confete.style.setProperty('--x', `${destinoX}px`);
-                confete.style.setProperty('--y', `${destinoY}px`);
-                confete.style.setProperty('--r', `${r}deg`);
-                confete.style.animationDelay = (Math.random() * 0.1) + 's';
+                confete.style.zIndex = '100000';
+                confete.style.transition = 'transform 2s ease-out, opacity 2s';
                 document.body.appendChild(confete);
-                setTimeout(() => confete.remove(), 3000);
+
+                const angulo = Math.random() * Math.PI * 2;
+                const dist = (Math.random() * 200) + 100;
+                
+                setTimeout(() => {
+                    confete.style.transform = `translate(${Math.cos(angulo)*dist}px, ${Math.sin(angulo)*dist + 150}px) rotate(${Math.random()*360}deg)`;
+                    confete.style.opacity = '0';
+                }, 50);
+
+                setTimeout(() => confete.remove(), 2000);
             }
         }
 
         function comecarChuvaDeCoracoes() {
+            if(intervaloCoracoes) return;
             intervaloCoracoes = setInterval(() => {
-                if (!cartaAberta) return;
                 const coracao = document.createElement('div');
-                coracao.classList.add('coracao-caindo');
-                const models = ['❤️', '💖', '💗', '🗿', '💘', '💝', '🩷'];
-                coracao.innerText = models[Math.floor(Math.random() * models.length)];
+                coracao.style.position = 'fixed';
+                coracao.style.top = '-20px';
                 coracao.style.left = Math.random() * 100 + 'vw';
-                coracao.style.fontSize = (Math.random() * 17) + 15 + 'px';
-                const duracao = (Math.random() * 3) + 3;
-                coracao.style.animationDuration = duracao + 's';
-                coracao.style.opacity = (Math.random() * 0.5) + 0.5;
+                coracao.style.zIndex = '9'; 
+                const models = ['❤️', '💖', '💗', '🗿', '💘', '🩷']; 
+                coracao.innerText = models[Math.floor(Math.random() * models.length)];
+                coracao.style.fontSize = (Math.random() * 15) + 15 + 'px';
+                coracao.style.transition = 'transform 4s linear, opacity 4s';
                 document.body.appendChild(coracao);
-                setTimeout(() => coracao.remove(), duracao * 1000);
-            }, 300);
+
+                setTimeout(() => {
+                    coracao.style.transform = `translateY(105vh) translateX(${Math.random()*100 - 50}px)`;
+                    coracao.style.opacity = '0';
+                }, 50);
+
+                setTimeout(() => coracao.remove(), 4000);
+            }, 400);
         }
 
         function pararChuvaDeCoracoes() {
-            clearInterval(intervaloCoracoes); 
-            const coracoesAtivos = document.querySelectorAll('.coracao-caindo');
-            coracoesAtivos.forEach(c => c.remove());
+            clearInterval(intervaloCoracoes);
+            intervaloCoracoes = null;
+        }
+
+        function acelerarKirby() {
+            const kirby = document.getElementById("kirbyInterativo");
+            kirby.classList.add("super-rapido");
+            
+            setTimeout(() => {
+                kirby.classList.remove("super-rapido");
+            }, 700);
         }
     </script>
 </body>
